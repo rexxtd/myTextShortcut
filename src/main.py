@@ -30,7 +30,7 @@ import function.ocrLangCheck as oLC
 
 version = "1.0.0" # will be replace with deployment server
 appName = "myShortcut"
-guide_url = ""
+guide_url = "https://github.com/rexxtd/myTextShortcut"
 backgroundImage_inputPath = 'background.png' #easter1
 backgroundOccupancy = 0.7 #easter1
 #load config folder and config file path
