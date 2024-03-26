@@ -28,9 +28,9 @@ import function.checkDependencies as chkD
 import function.bgChangeOccupancy as bgCO
 import function.ocrLangCheck as oLC
 
-version = "1.0.0" # I don't know how to make a checking version without deploying to a local server, so this is the replacement T_T
-appName = "MyShortcut (General)"
-conf_url = "https://confluence.nexon.com/display/NWVNQA/%5BDunpaM%5D+MyShortcut+tool"
+version = "1.0.0" # will be replace with deployment server
+appName = "myShortcut"
+guide_url = ""
 backgroundImage_inputPath = 'background.png' #easter1
 backgroundOccupancy = 0.7 #easter1
 #load config folder and config file path
@@ -241,7 +241,7 @@ class App(ctk.CTk):
         # change this number depending on the total button added to navigation bar
         self.navigation_frame.grid_rowconfigure(8, weight=1)
 
-        self.navigation_frame_label = ctk.CTkLabel(self.navigation_frame, text="MyShortcut", image=self.logo_image, compound="left", font=ctk.CTkFont(family="Century Gothic", size=20, weight="bold"))
+        self.navigation_frame_label = ctk.CTkLabel(self.navigation_frame, text="myShortcut", image=self.logo_image, compound="left", font=ctk.CTkFont(family="Century Gothic", size=20, weight="bold"))
         self.navigation_frame_label.grid(row=0, column=0, padx=20, pady=20)
 
         self.textCompare_button = ctk.CTkButton(self.navigation_frame, corner_radius=0, height=40, border_spacing=10, text="Text Compare", font=sideBarButtonFont,
@@ -260,8 +260,8 @@ class App(ctk.CTk):
         self.setting_button.grid(row=3, column=0, sticky="ew")
 
         def help_button_event():
-            messagebox.showinfo(title="Information", message="Creator: RexTD@nexonnetworks.com\nMore information can be found on the Confluence website.")
-            webbrowser.open(conf_url)
+            messagebox.showinfo(title="Information", message="Creator: RexTD\nMore information can be found on the Github repo website.")
+            webbrowser.open(guide_url)
 
         self.help_button = ctk.CTkButton(self.navigation_frame, corner_radius=0, height=40, border_spacing=10, text="Help", font=sideBarButtonFont,
                                                     fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"),
