@@ -1,0 +1,1 @@
+pyinstaller --clean --upx-dir=./upx main.spec
