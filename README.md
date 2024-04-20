@@ -24,6 +24,7 @@
         diff-match-patch==20230430
         pywin32
         winocr
+        googletrans==3.1.0a0
 
 All of the dependencies are located inside “requirements.txt”. We highly recommend installing it using pip as the following guide: https://intellipaat.com/community/31672/how-to-use-requirements-txt-to-install-all-dependencies-in-a-python-project.
 
