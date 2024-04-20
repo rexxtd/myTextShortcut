@@ -1,9 +1,2 @@
 1. Scan Text error:
-# Language is not installed
-Windows Powershell (Run as Administrator)
-    ### Search for installed languages
-    Get-WindowsCapability -Online -Name "Language.OCR*"
-    ### Install language packages
-    Add-WindowsCapability -Online -Name "Language.OCR~~~en-US~0.0.1.0" (replace en-US with different language)
-
 In case of error 0x800f0954 (not able to install language packages): https://thesysadminchannel.com/solved-add-windowscapability-failed-error-code-0x800f0954-rsat-fix/
