@@ -1,7 +1,6 @@
 #import packages
 import os
 import sys
-from threading import Thread
 from tkinter import messagebox
 import webbrowser
 import customtkinter as ctk
@@ -11,17 +10,20 @@ import re
 import configparser
 from ctypes import windll
 import diff_match_patch as dmp_module
-import winocr
-import asyncio
-import cv2
-import numpy as np
 import win32gui
 import win32con
 import win32api
 import win32process
 import psutil
 import subprocess
+
+#import packages that used in .function only for compilying
+import cv2
+import numpy as np
 from googletrans import Translator
+import winocr
+import asyncio
+from threading import Thread
 
 
 # import other modules
@@ -35,8 +37,6 @@ import function.ocrLangCheck as oLC
 version = "1.0.1"
 appName = "myShortcut"
 guide_url = "https://github.com/rexxtd/myTextShortcut"
-backgroundImage_inputPath = 'background.png'  # easter1
-backgroundOccupancy = 0.7  # easter1
 # load config folder and config file path
 current_dir = os.path.abspath(os.path.dirname(__file__))
 configSetting_path = 'setting.ini'
@@ -171,19 +171,6 @@ app_width = int(properties_values['width'])
 app_height = int(properties_values['height'])
 
 
-def set_transparent_color(theme_name):
-    if (theme_name == "Dark"):
-        hex_color = "#000000"
-        RGBA_color = win32api.RGB(0, 0, 0)
-    elif (theme_name == "Light"):
-        hex_color = "#ffffff"
-        RGBA_color = win32api.RGB(255, 255, 255)
-    return (hex_color, RGBA_color)
-
-
-transparent_fg_color, transparent_RGBA_color = set_transparent_color(theme)
-
-
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
@@ -238,25 +225,6 @@ class App(ctk.CTk):
         self.help_image = ctk.CTkImage(light_image=Image.open(os.path.join(image_path, "help_dark.png")),
                                        dark_image=Image.open(os.path.join(image_path, "help_light.png")), size=(26, 26))
 
-        # Load the background image with transparency (e.g., a PNG image with alpha channel)
-        try:
-            background_image_process = bgCO.change_occupancy(
-                backgroundImage_inputPath, backgroundOccupancy)
-            background_image = ImageTk.PhotoImage(background_image_process)
-        except Exception as e:
-            # print(e)
-            print("BG_ERROR: No background found! Use None instead.")
-            background_image = None
-
-        def create_transparent_fg(widget):
-            hwnd = widget.winfo_id()
-            colorkey = transparent_RGBA_color
-            wnd_exstyle = win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE)
-            new_exstyle = wnd_exstyle | win32con.WS_EX_LAYERED
-            win32gui.SetWindowLong(hwnd, win32con.GWL_EXSTYLE, new_exstyle)
-            win32gui.SetLayeredWindowAttributes(
-                hwnd, colorkey, 255, win32con.LWA_COLORKEY)
-
         # create navigation frame
         self.navigation_frame = ctk.CTkFrame(self, corner_radius=0)
         self.navigation_frame.grid(row=0, column=0, sticky="nsew")
@@ -297,11 +265,6 @@ class App(ctk.CTk):
             self, corner_radius=0, fg_color="transparent")
         self.textCompare_frame.grid_rowconfigure(0, weight=1)
         self.textCompare_frame.grid_columnconfigure((0, 1), weight=1)
-        # Create a Label widget to display the background image
-        textCompare_frame_background_label = ctk.CTkLabel(
-            self.textCompare_frame, text="", image=background_image)
-        textCompare_frame_background_label.place(
-            x=0, y=0, relwidth=1, relheight=1)
 
         # textbox
         self.textCompare_frame_textbox1 = ctk.CTkTextbox(
@@ -437,24 +400,17 @@ class App(ctk.CTk):
         self.setting_frame.grid_rowconfigure(0, weight=0)
         self.setting_frame.grid_columnconfigure((0, 1, 2, 3), weight=1)
 
-        # Create a Label widget to display the background image
-        setting_frame_background_label = ctk.CTkLabel(
-            self.setting_frame, text="", image=background_image)
-        setting_frame_background_label.place(x=0, y=0, relwidth=1, relheight=1)
-
         # General settings
         self.setting_header_1_label = ctk.CTkLabel(
-            self.setting_frame, text="General", font=header_1Font, fg_color=transparent_fg_color)
+            self.setting_frame, text="General", font=header_1Font, fg_color="transparent")
         self.setting_header_1_label.grid(
             row=0, column=0, padx=0, pady=(30, 0), sticky="ew")
-        create_transparent_fg(self.setting_header_1_label)
 
         # Theme settings
         self.theme_setting_label = ctk.CTkLabel(
-            self.setting_frame, text="Theme", font=defaultTextButtonFont, fg_color=transparent_fg_color)
+            self.setting_frame, text="Theme", font=defaultTextButtonFont, fg_color="transparent")
         self.theme_setting_label.grid(
             row=1, column=0, columnspan=2, padx=(50, 0), pady=10, sticky="ew")
-        create_transparent_fg(self.theme_setting_label)
 
         theme_values = ["Light", "Dark"]
         self.theme_setting_menu = ctk.CTkOptionMenu(
@@ -465,10 +421,9 @@ class App(ctk.CTk):
 
         # Transparency settings
         self.transparency_setting_label = ctk.CTkLabel(
-            self.setting_frame, text="Application Transparency", font=defaultTextButtonFont, fg_color=transparent_fg_color)
+            self.setting_frame, text="Application Transparency", font=defaultTextButtonFont, fg_color="transparent")
         self.transparency_setting_label.grid(
             row=2, column=0, columnspan=2, padx=(50, 0), pady=10, sticky="ew")
-        create_transparent_fg(self.transparency_setting_label)
 
         def slider_event(value):
             self.attributes('-alpha', self.transparency_setting_slider.get())
@@ -476,10 +431,9 @@ class App(ctk.CTk):
                 text=self.transparency_setting_slider.get())
 
         self.transparency_setting_slider = ctk.CTkSlider(
-            self.setting_frame, from_=0.3, to=1.0, bg_color=transparent_fg_color, fg_color=transparent_fg_color, command=slider_event)
+            self.setting_frame, from_=0.3, to=1.0, bg_color="transparent", command=slider_event)
         self.transparency_setting_slider.grid(
             row=2, column=2, padx=(50, 0), pady=10, sticky="ew")
-        create_transparent_fg(self.transparency_setting_slider)
 
         try:
             self.transparency_setting_slider.set(float(appTransparency))
@@ -488,24 +442,21 @@ class App(ctk.CTk):
                 e) + ".\nSome setting value is not correct.\nMaybe try to delete the setting file or contact administrator.")
 
         self.slide_label = ctk.CTkLabel(
-            self.setting_frame, text=appTransparency, font=defaultTextButtonFont, fg_color=transparent_fg_color)
+            self.setting_frame, text=appTransparency, font=defaultTextButtonFont, fg_color="transparent")
         self.slide_label.grid(
             row=2, column=3, padx=(10, 0), pady=10, sticky="w")
-        create_transparent_fg(self.slide_label)
 
         # Text Compare settings
         self.setting_header_2_label = ctk.CTkLabel(
-            self.setting_frame, text="Text Compare", font=header_1Font, fg_color=transparent_fg_color)
+            self.setting_frame, text="Text Compare", font=header_1Font, fg_color="transparent")
         self.setting_header_2_label.grid(
             row=3, column=0, padx=(0, 0), pady=5, sticky="ew")
-        create_transparent_fg(self.setting_header_2_label)
 
         # Highlight color settings
         self.highlight_color_label = ctk.CTkLabel(
-            self.setting_frame, text="Highlight color (HEX)", font=defaultTextButtonFont, fg_color=transparent_fg_color)
+            self.setting_frame, text="Highlight color (HEX)", font=defaultTextButtonFont, fg_color="transparent")
         self.highlight_color_label.grid(
             row=4, column=0, columnspan=2, padx=(50, 0), pady=10, sticky="ew")
-        create_transparent_fg(self.highlight_color_label)
 
         def highlight_color_validate_input(input):
             # Check if the input is empty or has more than 7 characters
@@ -520,10 +471,9 @@ class App(ctk.CTk):
 
         # Highlight option settings
         self.highlight_option_lable = ctk.CTkLabel(
-            self.setting_frame, text="Highlight Option", font=defaultTextButtonFont, fg_color=transparent_fg_color)
+            self.setting_frame, text="Highlight Option", font=defaultTextButtonFont, fg_color="transparent")
         self.highlight_option_lable.grid(
             row=5, column=0, columnspan=2, padx=(50, 0), pady=10, sticky="ew")
-        create_transparent_fg(self.highlight_option_lable)
 
         # Create StringVars to store the selected values of the OptionMenus
         highlight_option_var = ctk.StringVar()
@@ -536,10 +486,9 @@ class App(ctk.CTk):
 
         # Scan Text settings
         self.setting_header_3_label = ctk.CTkLabel(
-            self.setting_frame, text="Scan Text", font=header_1Font, fg_color=transparent_fg_color)
+            self.setting_frame, text="Scan Text", font=header_1Font, fg_color="transparent")
         self.setting_header_3_label.grid(
             row=6, column=0, padx=(0, 0), pady=5, sticky="ew")
-        create_transparent_fg(self.setting_header_3_label)
 
         # OCR method settings
         def update_second_optionmenu_state(*args):
@@ -553,10 +502,9 @@ class App(ctk.CTk):
         OCR_language_var = ctk.StringVar()
 
         self.OCR_method_setting_label = ctk.CTkLabel(
-            self.setting_frame, text="Scan method", font=defaultTextButtonFont, fg_color=transparent_fg_color)
+            self.setting_frame, text="Scan method", font=defaultTextButtonFont, fg_color="transparent")
         self.OCR_method_setting_label.grid(
             row=7, column=0, columnspan=2, padx=(50, 0), pady=10, sticky="ew")
-        create_transparent_fg(self.OCR_method_setting_label)
 
         OCR_method_setting_values = ["WinOCR"]
         self.OCR_method_setting_switch = ctk.CTkOptionMenu(
@@ -567,10 +515,9 @@ class App(ctk.CTk):
 
         # OCR language settings
         self.OCR_language_setting_label = ctk.CTkLabel(
-            self.setting_frame, text="Default language", font=defaultTextButtonFont, fg_color=transparent_fg_color)
+            self.setting_frame, text="Default language", font=defaultTextButtonFont, fg_color="transparent")
         self.OCR_language_setting_label.grid(
             row=8, column=0, columnspan=2, padx=(50, 0), pady=10, sticky="ew")
-        create_transparent_fg(self.OCR_language_setting_label)
 
         OCR_language_setting_switch_values = ["English (Global)", "English (US)", "Korean", "Japanese",
                                               "Chinese (Simplified)", "Chinese (Traditional)", "Russian", "German", "Spanish", "Portuguese", "French"]
@@ -587,10 +534,9 @@ class App(ctk.CTk):
 
         # Empty label above save setting for good spacing
         self.empty_label = ctk.CTkLabel(
-            self.setting_frame, text="", font=defaultTextButtonFont, fg_color=transparent_fg_color)
+            self.setting_frame, text="", font=defaultTextButtonFont, fg_color="transparent")
         self.empty_label.grid(row=17, column=1, padx=(
             0, 30), pady=10, sticky="nse")
-        create_transparent_fg(self.empty_label)
 
         # Save setting button
         self.save_setting_btn = ctk.CTkButton(
@@ -633,22 +579,19 @@ class App(ctk.CTk):
 
         # Add OCR Language settings
         self.add_ocr_lang_setting_header_1_label = ctk.CTkLabel(
-            self.setting_frame, text="Add OCR Language", font=header_1Font, fg_color=transparent_fg_color)
+            self.setting_frame, text="Add OCR Language", font=header_1Font, fg_color="transparent")
         self.add_ocr_lang_setting_header_1_label.grid(
             row=9, column=0, padx=(10, 0), pady=5, sticky="ew")
-        create_transparent_fg(self.add_ocr_lang_setting_header_1_label)
 
         self.availableOCRLang_label = ctk.CTkLabel(
-            self.setting_frame, text="Available Language", font=defaultTextButtonFont, fg_color=transparent_fg_color)
+            self.setting_frame, text="Available Language", font=defaultTextButtonFont, fg_color="transparent")
         self.availableOCRLang_label.grid(
             row=10, column=0, columnspan=2, padx=(50, 0), pady=10, sticky="ew")
-        create_transparent_fg(self.availableOCRLang_label)
 
         self.addOCRLanguage_header_2_label = ctk.CTkLabel(
-            self.setting_frame, text="OCR Language", font=defaultTextButtonFont, fg_color=transparent_fg_color)
+            self.setting_frame, text="OCR Language", font=defaultTextButtonFont, fg_color="transparent")
         self.addOCRLanguage_header_2_label.grid(
             row=11, column=0, columnspan=2, padx=(50, 0), pady=10, sticky="ew")
-        create_transparent_fg(self.addOCRLanguage_header_2_label)
 
         # Button
         self.check_OCR_lang_btn = ctk.CTkButton(

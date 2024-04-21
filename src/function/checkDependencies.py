@@ -1,12 +1,6 @@
-import subprocess
 from threading import Thread
 import time
 import customtkinter as ctk
-from PIL import Image, ImageTk
-import winocr
-import asyncio
-import numpy as np
-import cv2
 from tkinter import messagebox
 import os.path
 

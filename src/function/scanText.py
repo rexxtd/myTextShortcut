@@ -3,7 +3,6 @@ from tkinter import messagebox
 import psutil
 import pyautogui
 from PIL import ImageGrab
-
 import function.scanTextWindow as stW
 
 # OCR Function
