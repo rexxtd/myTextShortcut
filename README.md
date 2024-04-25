@@ -12,13 +12,14 @@ There are 2 main functions:
 - It is built to only run the function on your local computer, therefore the data will never leave your computer.
 - It is very useful when you need to working with some internal information that cannot use any online tools on the websites.
 
-### 2. Scan Text
+### 2. Scan Text & Translate
 - The fastest way to extract the text from an image on your computer.
 - It uses the WinOCR modules, thanks to this [repo](https://github.com/GitHub30/winocr).
 - The feature uses the OCR detecting engine provided directly from Windows, which has an incredibly fast processing time but can still maintain a decent accuracy rate.
 - For the simplification of the application, there are only several languages that are supported, including: <b>English (Global), English (US), Korean, Japanese, Chinese (Simplified), Chinese (Traditional), Russian, German, Spanish, Portuguese, and French</b>.
-- However, in order to use it, it is required to install the language package first. The installation is only required once. You can install the language package in 2 ways:
-
+- However, to use the OCR modules, it is required to install the language package first. The installation is only required once. You can install the language package in 2 ways:
+- Translate does not require installing any language package, since it can be used with Google's API.
+- 
   #### <b>Method 1: </b>
   On the MyShortcut application, go to <b>Setting</b>, then scroll down to the <i>Add OCR Language</i>, click on the dropdown button next to the <i>OCR Language</i> and select the language you want to install. Then click <b>Add</b> to install the language package.
 
